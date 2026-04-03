@@ -156,7 +156,7 @@ All tunable parameters (PID gains, thresholds, pin assignments, duty cycles) liv
 ---
 
 ## Hardware Connections
-
+![Wiring diagram showing all pin connections on the ATmega328P](wiring_diagram.png)
 | Pin | Connection | Notes |
 |---|---|---|
 | `PB1` (OC1A) | Servo | Timer1 hardware PWM, 50 Hz, 600–2400 µs pulse |
