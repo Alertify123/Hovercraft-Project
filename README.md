@@ -1,65 +1,99 @@
-# Autonomous Hovercraft Platform (ENGR 290)
+# Autonomous Maze-Navigating Hovercraft
 
-**Team 3:**
-* Chrisjan Alejandro
-* Juan Sebastian Holguin Corpas
-* Mcwill Buikpor
-* Niraj Patel
-* Philippe Hadley Plancher
+Bare-metal embedded robotics project built on an **ATmega328P** in C, featuring **PID yaw stabilization**, **MPU-6050 IMU integration**, and autonomous maze navigation using IR + ultrasonic sensing.
 
+---
 
-## Project Overview
-This repository contains the source code and design documentation for our autonomous hovercraft built for the ENGR 290 Mini-Capstone at Concordia University. The vehicle was designed to navigate a maze, clear obstacles up to 3mm in height, and stop autonomously under a horizontal bar.
+## Team
+- Chrisjan Alejandro  
+- Juan Sebastian Holguin Corpas  
+- Mcwill Buikpor  
+- Niraj Patel  
+- Philippe Hadley Plancher
 
-**Technical Highlight:**
-Unlike standard Arduino projects, this firmware is written in **Embedded C (AVR)** using direct register manipulation for the ATmega328P microcontroller. It features a custom **PID controller** to stabilize the hovercraft's yaw steering using an IMU.
+---
 
-## The Hardware (Concept 1)
-The design prioritizes weight efficiency (~685g total mass) using a "Concept 1" dual-fan configuration.
+## Highlights
+- Bare-metal AVR firmware (no Arduino libraries)
+- Real-time heading stabilization with PID + gyro feedback
+- Multi-sensor perception stack: IR wall sensing + ultrasonic upbar detection
+- Autonomous decision-making: straight driving, intersection scanning, dead-end recovery, finish stop
+- Modular firmware layout (`src/`, `include/`, `config.h`) for maintainability
 
-* **Microcontroller:** Arduino Nano (ATmega328P)
-* **Lift Fan:** Delta AFB1212SH (12V, 6.36W) - Generates ~4mm hover height.
-* **Thrust Fan:** Sunon MEC0251V1 (12V, 5.46W).
-* **Sensors:**
-    * **IMU:** MPU-6050 (I2C) for gyroscopic stabilization.
-    * **Distance:** HC-SR04 Ultrasonic & GP2Y0A21YK0F Infrared.
-* **Power:** 2x Gens 450 mAh LiPo Batteries (Series).
+---
 
-## Software Architecture
-The code (`FinalHovercraftCode_290_TEAM3_FALL_2025.c`) allows the system to bypass the Arduino abstraction layer for higher performance.
+## Repository Structure
 
-### Key Features Implemented:
-* **PID Control Loop:** Corrects steering drift using Gyroscope Z-axis data (`yaw_deg`).
-    * *Kp = 3.0, Ki = 0.1, Kd = 0.8*
-* **Direct Register PWM:** Manually configured Timer0 and Timer1 for precise servo and fan speed control.
-* **I2C Driver:** Custom implementation of the TWI (Two-Wire Interface) protocol to communicate with the MPU-6050 sensor.
-* **State Machine:** Logic to handle "Cruise," "Turn," "Scan," and "Stop" states autonomously.
+```text
+Hovercraft-Project/
+├── Makefile
+├── config.h
+├── include/
+│   ├── imu.h
+│   ├── motion.h
+│   ├── pid.h
+│   ├── sensors.h
+│   └── system.h
+├── src/
+│   ├── imu.c
+│   ├── main.c
+│   ├── motion.c
+│   ├── pid.c
+│   └── sensors.c
+└── legacy/
+    └── FinalHovercraftCode_290_TEAM3_FALL_2025.c
+```
 
-## Performance & Results
-* **Thrust:** Generated 0.603 N of thrust, exceeding the kinetic friction threshold of 0.137 N.
-* **Competition Result:** Successfully completed the first turn and one obstacle.
-* **Challenges:** The primary failure point was sensor noise handling in the competition environment. The IR/Ultrasonic sensor placement was swapped late in the process, which introduced unhandled edge cases in the navigation logic.
+---
 
-## Gallery
-| Drawing | Model |
-| :---: | :---: |
-| ![Drawing](drawing.png) | ![Model](model.png) |
+## Control Architecture
 
-<br>
+### Main loop
+1. `drive_straight_until_wall()`
+2. `handle_intersection()`
+3. repeat
 
-<h3>Competition Performance</h3>
-<table>
-  <tr>
-    <th width="50%">The Setup</th>
-    <th width="50%">Test Run</th>
-  </tr>
-  <tr>
-    <td valign="top">
-      <img src="final_comp.png" alt="Competition Setup" style="width: 100%;">
-    </td>
-    <td valign="top">
-      <video src="https://github.com/user-attachments/assets/115affdc-731b-40f7-8c52-8d15a36279e1" controls="controls" style="max-width: 100%;">
-      </video>
-    </td>
-  </tr>
-</table>
+### Key modules
+- **`src/main.c`**: 1 kHz systick ISR, software PWM timing, boot sequence, main navigation loop
+- **`src/imu.c`**: TWI/I2C driver, MPU setup, gyro calibration, yaw integration
+- **`src/sensors.c`**: ADC + IR distance conversion, HC-SR04 trigger/echo timing, upbar confirmation logic
+- **`src/pid.c`**: Yaw PID controller (anti-windup + filtered derivative)
+- **`src/motion.c`**: Servo/fan actuation, turn maneuvers, straight driving, intersection solver
+
+---
+
+## Build
+
+### Requirements
+- `avr-gcc`
+- `avr-objcopy`
+- `avr-size`
+
+### Commands
+```bash
+make        # build hovercraft.elf + hovercraft.hex
+make size   # AVR memory usage
+make clean  # remove build artifacts
+```
+
+---
+
+## Tuning
+All tunable constants are centralized in `config.h`, including:
+- Pin assignments
+- PID gains (`YAW_KP`, `YAW_KI`, `YAW_KD`)
+- Distance thresholds (`OBSTACLE_THRESHOLD_CM`, `UPBAR_THRESHOLD_CM`)
+- Motion settings (`THRUST_CRUISE_DUTY`, `TURN_ANGLE_DEG`, timeouts)
+
+---
+
+## Media
+| Drawing | Model | Competition setup |
+| :--: | :--: | :--: |
+| ![Drawing](drawing.png) | ![Model](model.png) | ![Competition setup](final_comp.png) |
+
+---
+
+## Legacy firmware
+The original single-file implementation is preserved at:
+- `legacy/FinalHovercraftCode_290_TEAM3_FALL_2025.c`
