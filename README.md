@@ -6,15 +6,41 @@ Bare-metal embedded robotics project built on an **ATmega328P** in **C**, featur
 
 ## 🎥 Demo
 
+### Model Simulation
+![Hovercraft bench testing](model.png)
+
 ### Maze Run
 ![Hovercraft maze run](final_comp.png)
 
-### Bench Testing
-![Hovercraft bench testing](model.png)
+<table width="100%">
+  <tr>
+    <th width="50%">Maze Photo</th>
+    <th width="50%">Demo Video</th>
+  </tr>
+  <tr>
+    <td valign="top" align="center" style="height: 700px;">
+      <img src="maze.png" alt="Hovercraft navigating maze" style="height: 100%; width: auto; max-width: 100%;" />
+    </td>
+    <td valign="top" align="center" style="height: 700px;">
+      <video
+        src="https://github.com/user-attachments/assets/57c69494-b7ab-4d8a-a9e7-fc51435025ab"
+        controls
+        style="height: 100%; width: 100%; object-fit: fill;">
+      </video>
+    </td>
+  </tr>
+</table>
 
-[▶️ Watch demo video](https://youtube.com/shorts/REPLACE_WITH_YOUR_VIDEO_ID)
+---
 
-> Replace the link above with your uploaded YouTube short (or GitHub-hosted MP4 link) to show your run video directly from this README.
+---
+
+## Team 🤖
+- Chrisjan Alejandro  
+- Juan Sebastian Holguin Corpas  
+- Mcwill Buikpor  
+- Niraj Patel  
+- Philippe Hadley Plancher
 
 ---
 
@@ -87,50 +113,7 @@ Hovercraft-Project/
 │   ├── pid.h
 │   ├── motion.h
 │   └── system.h
-Bare-metal embedded robotics project built on an **ATmega328P** in C, featuring **PID yaw stabilization**, **MPU-6050 IMU integration**, and autonomous maze navigation using IR + ultrasonic sensing.
-
----
-
-## Team
-- Chrisjan Alejandro  
-- Juan Sebastian Holguin Corpas  
-- Mcwill Buikpor  
-- Niraj Patel  
-- Philippe Hadley Plancher
-
----
-
-## Highlights
-- Bare-metal AVR firmware (no Arduino libraries)
-- Real-time heading stabilization with PID + gyro feedback
-- Multi-sensor perception stack: IR wall sensing + ultrasonic upbar detection
-- Autonomous decision-making: straight driving, intersection scanning, dead-end recovery, finish stop
-- Modular firmware layout (`src/`, `include/`, `config.h`) for maintainability
-
----
-
-## Repository Structure
-
-```text
-Hovercraft-Project/
-├── Makefile
-├── config.h
-├── include/
-│   ├── imu.h
-│   ├── motion.h
-│   ├── pid.h
-│   ├── sensors.h
-│   └── system.h
-├── src/
-│   ├── imu.c
-│   ├── main.c
-│   ├── motion.c
-│   ├── pid.c
-│   └── sensors.c
-└── legacy/
-    └── FinalHovercraftCode_290_TEAM3_FALL_2025.c
 ```
-
 All tunable parameters (PID gains, thresholds, pin assignments, duty cycles) live in `config.h` so nothing is buried in logic files.
 
 ---
@@ -195,6 +178,10 @@ All tunable parameters (PID gains, thresholds, pin assignments, duty cycles) liv
 **Requirements:** `avr-gcc`, `avr-libc`, `avr-binutils`, `avrdude`
 
 ```bash
+# Clone the repo
+git clone https://github.com/yourusername/hovercraft.git
+cd hovercraft
+
 # Compile
 make
 
@@ -219,54 +206,4 @@ Default upload port is `/dev/ttyUSB0`. Edit `PORT` in the `Makefile` if needed.
 - Improve skirt design for lower leakage and better turning precision
 ---
 
-## Control Architecture
 
-### Main loop
-1. `drive_straight_until_wall()`
-2. `handle_intersection()`
-3. repeat
-
-### Key modules
-- **`src/main.c`**: 1 kHz systick ISR, software PWM timing, boot sequence, main navigation loop
-- **`src/imu.c`**: TWI/I2C driver, MPU setup, gyro calibration, yaw integration
-- **`src/sensors.c`**: ADC + IR distance conversion, HC-SR04 trigger/echo timing, upbar confirmation logic
-- **`src/pid.c`**: Yaw PID controller (anti-windup + filtered derivative)
-- **`src/motion.c`**: Servo/fan actuation, turn maneuvers, straight driving, intersection solver
-
----
-
-## Build
-
-### Requirements
-- `avr-gcc`
-- `avr-objcopy`
-- `avr-size`
-
-### Commands
-```bash
-make        # build hovercraft.elf + hovercraft.hex
-make size   # AVR memory usage
-make clean  # remove build artifacts
-```
-
----
-
-## Tuning
-All tunable constants are centralized in `config.h`, including:
-- Pin assignments
-- PID gains (`YAW_KP`, `YAW_KI`, `YAW_KD`)
-- Distance thresholds (`OBSTACLE_THRESHOLD_CM`, `UPBAR_THRESHOLD_CM`)
-- Motion settings (`THRUST_CRUISE_DUTY`, `TURN_ANGLE_DEG`, timeouts)
-
----
-
-## Media
-| Drawing | Model | Competition setup |
-| :--: | :--: | :--: |
-| ![Drawing](drawing.png) | ![Model](model.png) | ![Competition setup](final_comp.png) |
-
----
-
-## Legacy firmware
-The original single-file implementation is preserved at:
-- `legacy/FinalHovercraftCode_290_TEAM3_FALL_2025.c`
