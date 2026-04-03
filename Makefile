@@ -36,5 +36,6 @@ clean:
 
 flash: $(TARGET).hex
 	$(AVRDUDE) -c $(PROGRAMMER) -p m328p -P $(PORT) -b $(BAUD) -U flash:w:$(TARGET).hex
+	@echo "Example: avrdude -c arduino -p m328p -P /dev/ttyUSB0 -b 115200 -U flash:w:$(TARGET).hex"
 
 .PHONY: all clean flash size
