@@ -179,7 +179,7 @@ All tunable parameters (PID gains, thresholds, pin assignments, duty cycles) liv
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/hovercraft.git
+git clone https://github.com/Alertify123/Hovercraft-Project.git
 cd hovercraft
 
 # Compile
