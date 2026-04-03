@@ -31,10 +31,6 @@ Bare-metal embedded robotics project built on an **ATmega328P** in **C**, featur
   </tr>
 </table>
 
----
-
----
-
 ## Team 🤖
 - Chrisjan Alejandro  
 - Juan Sebastian Holguin Corpas  
@@ -99,8 +95,14 @@ Built as part of an engineering project at Concordia University.
 ```text
 Hovercraft-Project/
 ├── README.md
+├── .gitignore            Ignore AVR build outputs
 ├── Makefile              avr-gcc build and avrdude flash targets
 ├── config.h              All pin definitions, thresholds, and tuning constants
+├── legacy/
+│   └── FinalHovercraftCode_290_TEAM3_FALL_2025.c
+│                         Archived competition submission source
+├── Parts_&_Calculations.xlsx
+│                         Bill of materials and design calculations
 ├── src/
 │   ├── main.c            Entry point, 1 kHz systick ISR, software PWM, millis()
 │   ├── imu.c             TWI driver, MPU-6050 init, gyro calibration, yaw integration
@@ -115,6 +117,13 @@ Hovercraft-Project/
 │   └── system.h
 ```
 All tunable parameters (PID gains, thresholds, pin assignments, duty cycles) live in `config.h` so nothing is buried in logic files.
+
+---
+
+## Repository Notes
+
+- `legacy/FinalHovercraftCode_290_TEAM3_FALL_2025.c` is preserved as an archival snapshot of the final competition source.
+- Build artifacts (`*.o`, `*.elf`, `*.hex`) are intentionally ignored via `.gitignore` to keep the repository clean.
 
 ---
 
@@ -205,5 +214,4 @@ Default upload port is `/dev/ttyUSB0`. Edit `PORT` in the `Makefile` if needed.
 - Add wireless telemetry for tuning and debugging
 - Improve skirt design for lower leakage and better turning precision
 ---
-
 
